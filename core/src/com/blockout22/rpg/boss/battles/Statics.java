@@ -4,41 +4,57 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
+import com.blockout22.rpg.boss.battles.mobs.MobData;
+import com.blockout22.rpg.boss.battles.mobs.Player;
+import com.blockout22.rpg.boss.battles.mobs.training.MobRat;
+import com.blockout22.rpg.boss.battles.mobs.training.MobUnicorn;
+import com.blockout22.rpg.boss.battles.mobs.training.MobZombie;
 import com.blockout22.rpg.boss.battles.screens.GameScreen;
 import com.blockout22.rpg.boss.battles.screens.MainMenuScreen;
+import com.blockout22.rpg.boss.battles.screens.TrainingScreen;
 import com.blockout22.rpg.boss.battles.screens.helper.ScreenStage;
-import com.github.czyzby.lml.parser.LmlParser;
-import com.github.czyzby.lml.util.Lml;
-import com.kotcrab.vis.ui.VisUI;
 
 public class Statics {
 
     private static Game game;
     private static Preferences prefs;
 
+    private static Player player;
+    public static MobData[] trainingMobs = new MobData[3];
+
     //change this to false for paid version
-    private static boolean isFree = true;
+    public static final boolean isFree = true;
 
     private static Array<ScreenStage> screenHistroy;
 
     public static ScreenStage
             MAIN_MENU,
-            GAME_SCREEN;
+            GAME_SCREEN,
+            TRAINING_SCREEN;
 
     public static void init(Game game){
         Statics.game = game;
         prefs = Gdx.app.getPreferences("userdata");
         screenHistroy = new Array<ScreenStage>();
 
-        MAIN_MENU = new MainMenuScreen();
-        GAME_SCREEN = new GameScreen();
+        player = new Player();
+
+        trainingMobs[0] = new MobData(true, new MobRat());
+        trainingMobs[1] = new MobData(true, new MobZombie());
+        trainingMobs[2] = new MobData(false, new MobUnicorn());
+
+        MAIN_MENU = new MainMenuScreen(player);
+        GAME_SCREEN = new GameScreen(player);
+        TRAINING_SCREEN = new TrainingScreen(player);
 
         setScreen(MAIN_MENU);
     }
 
     public static void backScreen(){
+        System.out.println(screenHistroy.size);
         if(screenHistroy.size > 1){
             ScreenStage s = screenHistroy.get(screenHistroy.size - 2);
+            screenHistroy.removeIndex(screenHistroy.size - 1);
             screenHistroy.removeIndex(screenHistroy.size - 1);
             setScreen(s);
         }
@@ -52,6 +68,7 @@ public class Statics {
     public static void dispose(){
         MAIN_MENU.dispose();
         GAME_SCREEN.dispose();
+        TRAINING_SCREEN.dispose();
         prefs.flush();
     }
 }
