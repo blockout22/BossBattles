@@ -12,6 +12,7 @@ import com.blockout22.rpg.boss.battles.mobs.training.MobZombie;
 import com.blockout22.rpg.boss.battles.screens.GameScreen;
 import com.blockout22.rpg.boss.battles.screens.MainMenuScreen;
 import com.blockout22.rpg.boss.battles.screens.TrainingScreen;
+import com.blockout22.rpg.boss.battles.screens.MessageScreen;
 import com.blockout22.rpg.boss.battles.screens.helper.ScreenStage;
 
 public class Statics {
@@ -30,13 +31,23 @@ public class Statics {
     public static ScreenStage
             MAIN_MENU,
             GAME_SCREEN,
-            TRAINING_SCREEN;
+            TRAINING_SCREEN,
+            MESSAGE_SCREEN;
+
+    public static final String
+            PLAYER_MAX_HEALTH_XP = "max-health",
+            PLAYER_STRENGTH_XP = "strength",
+            PLAYER_SPEED = "attack-speed",
+            PLAYER_XP_BANK = "xp-bank",
+            UI_SCALE = "ui-scale";
 
     public static void init(Game game){
         Statics.game = game;
         prefs = Gdx.app.getPreferences("userdata");
+        System.out.println(prefs == null);
         screenHistroy = new Array<ScreenStage>();
 
+        System.out.println(getPreferences() == null);
         player = new Player();
 
         trainingMobs[0] = new MobData(true, new MobRat());
@@ -46,6 +57,7 @@ public class Statics {
         MAIN_MENU = new MainMenuScreen(player);
         GAME_SCREEN = new GameScreen(player);
         TRAINING_SCREEN = new TrainingScreen(player);
+        MESSAGE_SCREEN = new MessageScreen(player);
 
         setScreen(MAIN_MENU);
     }
@@ -65,10 +77,15 @@ public class Statics {
         screenHistroy.add(screen);
     }
 
+    public static Preferences getPreferences(){
+        return prefs;
+    }
+
     public static void dispose(){
         MAIN_MENU.dispose();
         GAME_SCREEN.dispose();
         TRAINING_SCREEN.dispose();
+        MESSAGE_SCREEN.dispose();
         prefs.flush();
     }
 }
